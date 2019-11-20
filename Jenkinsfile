@@ -44,7 +44,6 @@ pipeline {
       }
     }
     // DO NOT uncomment until 06_04 Lab
-    /*
     stage('DT Deploy Event') {
       steps {
         container("curl") {
@@ -60,9 +59,7 @@ pipeline {
           }
         }
       }
-    }
-    */
-    
+    }  
     // DO NOT uncomment until 10_01 Lab
     /*
     stage('Staging Warm Up') {
@@ -80,13 +77,13 @@ pipeline {
             }
           }
         }
-        echo "Running one iteration with one VU to warm up service"  
+        echo "Running one iteration with one VU to warm up service"
         container('jmeter') {
           script {
-            def status = executeJMeter ( 
+            def status = executeJMeter (
               scriptName: "jmeter/front-end_e2e_load.jmx",
               resultsDir: "e2eCheck_${env.APP_NAME}_warmup_${env.VERSION}_${BUILD_NUMBER}",
-              serverUrl: "front-end.staging", 
+              serverUrl: "front-end.staging",
               serverPort: 8080,
               checkPath: '/health',
               vuCount: 1,
@@ -111,14 +108,14 @@ pipeline {
           envId: 'Dynatrace Tenant',
           testCase: 'loadtest',
           tagMatchRules: tagMatchRules
-        ) 
+        )
         {
           container('jmeter') {
             script {
-              def status = executeJMeter ( 
+              def status = executeJMeter (
                 scriptName: "jmeter/front-end_e2e_load.jmx",
                 resultsDir: "e2eCheck_${env.APP_NAME}_staging_${env.VERSION}_${BUILD_NUMBER}",
-                serverUrl: "front-end.staging", 
+                serverUrl: "front-end.staging",
                 serverPort: 8080,
                 checkPath: '/health',
                 vuCount: 10,
@@ -137,8 +134,8 @@ pipeline {
         //sleeping to allow data to arrive in Dynatrace
         sleep 60
         perfSigDynatraceReports(
-          envId: 'Dynatrace Tenant', 
-          nonFunctionalFailure: 2, 
+          envId: 'Dynatrace Tenant',
+          nonFunctionalFailure: 2,
           specFile: "monspec/e2e_perfsig.json"
         )
       }
